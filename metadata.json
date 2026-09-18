@@ -1,0 +1,6 @@
+{
+  "name": "Routtefe",
+  "description": "Sistema de gestión de ventas, almacén y punto de venta móvil para cafetería, con sincronización en tiempo real en la nube y control administrativo formal integrado con Google Sheets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

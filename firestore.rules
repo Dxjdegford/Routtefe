@@ -1,0 +1,78 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidProfile(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.role in ['admin', 'encargado'] &&
+             data.pin is string && data.pin.size() >= 4 && data.pin.size() <= 20;
+    }
+
+    function isValidProduct(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 150 &&
+             data.category is string && data.category.size() > 0 && data.category.size() <= 50 &&
+             data.stock is number && data.stock >= 0 &&
+             data.cost is number && data.cost >= 0 &&
+             data.price is number && data.price >= 0;
+    }
+
+    function isValidRawMaterial(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 150 &&
+             data.category is string && data.category.size() > 0 && data.category.size() <= 50 &&
+             data.unit is string && data.unit.size() > 0 && data.unit.size() <= 30 &&
+             data.stock is number && data.stock >= 0 &&
+             data.cost is number && data.cost >= 0 &&
+             data.minStock is number && data.minStock >= 0;
+    }
+
+    function isValidSale(data) {
+      return data.timestamp is string && data.timestamp.size() > 0 && data.timestamp.size() <= 50 &&
+             data.paymentMethod in ['efectivo', 'tarjeta', 'transferencia'] &&
+             data.totalRevenue is number && data.totalRevenue >= 0 &&
+             data.totalCost is number && data.totalCost >= 0 &&
+             data.netProfit is number &&
+             data.items is list && data.items.size() <= 100;
+    }
+
+    match /profiles/{profileId} {
+      allow read: if true;
+      allow create, update: if isValidId(profileId) && isValidProfile(request.resource.data);
+      allow delete: if isValidId(profileId);
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update: if isValidId(productId) && isValidProduct(request.resource.data);
+      allow delete: if isValidId(productId);
+    }
+
+    match /raw_materials/{rawMaterialId} {
+      allow read: if true;
+      allow create, update: if isValidId(rawMaterialId) && isValidRawMaterial(request.resource.data);
+      allow delete: if isValidId(rawMaterialId);
+    }
+
+    match /sales/{saleId} {
+      allow read: if true;
+      allow create: if isValidId(saleId) && isValidSale(request.resource.data);
+      allow update, delete: if false;
+    }
+
+    match /settings/{settingId} {
+      allow read, write: if isValidId(settingId);
+    }
+
+    match /test/{testId} {
+      allow read, write: if true;
+    }
+  }
+}

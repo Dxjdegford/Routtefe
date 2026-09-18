@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "Profile": {
+      "title": "Profile",
+      "description": "User profile with role and access PIN for POS operations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "encargado"] },
+        "pin": { "type": "string" }
+      },
+      "required": ["id", "name", "role", "pin"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Retail product catalog item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "stock": { "type": "number" },
+        "cost": { "type": "number" },
+        "price": { "type": "number" }
+      },
+      "required": ["id", "name", "category", "stock", "cost", "price"]
+    },
+    "RawMaterial": {
+      "title": "RawMaterial",
+      "description": "Warehouse raw material and inventory supply",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "unit": { "type": "string" },
+        "stock": { "type": "number" },
+        "pkgSize": { "type": "string" },
+        "cost": { "type": "number" },
+        "minStock": { "type": "number" }
+      },
+      "required": ["id", "name", "category", "unit", "stock", "cost", "minStock"]
+    },
+    "Sale": {
+      "title": "Sale",
+      "description": "Point-of-sale completed transaction log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "dateStr": { "type": "string" },
+        "timeStr": { "type": "string" },
+        "items": { "type": "array" },
+        "paymentMethod": { "type": "string" },
+        "sellerName": { "type": "string" },
+        "totalRevenue": { "type": "number" },
+        "totalCost": { "type": "number" },
+        "netProfit": { "type": "number" }
+      },
+      "required": ["timestamp", "paymentMethod", "totalRevenue", "totalCost", "netProfit"]
+    }
+  },
+  "firestore": {
+    "/profiles/{profileId}": {
+      "schema": "Profile",
+      "description": "User profiles and access credentials"
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Catalog products for sale and inventory control"
+    },
+    "/raw_materials/{rawMaterialId}": {
+      "schema": "RawMaterial",
+      "description": "Raw material stock items"
+    },
+    "/sales/{saleId}": {
+      "schema": "Sale",
+      "description": "Sales history records"
+    },
+    "/settings/{settingId}": {
+      "schema": "Settings",
+      "description": "App settings including connected Google Sheets"
+    }
+  }
+}
